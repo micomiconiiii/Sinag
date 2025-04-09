@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hackathonui/carbon.dart';
 import 'package:hackathonui/community.dart';
 import 'package:hackathonui/calculator.dart';
 import 'package:hackathonui/profile.dart';
+import 'bargraph.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
@@ -17,13 +19,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
+      theme: ThemeData(fontFamily: 'Outfit', textTheme: const TextTheme()),
       initialRoute: '/',
       routes: {
         '/': (context) => HomeScreen(),
         '/community': (context) => Community(),
         '/calculator': (context) => Calculator(),
         '/profile': (context) => ProfilePage(),
+        '/carbon': (context) => Carbon(),
       },
     );
   }
@@ -104,17 +107,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Color(0xFFF6F6F6),
       appBar: AppBar(
-        title: Text(
-          "Sinag",
-          style: TextStyle(
-            fontFamily: 'Times New Roman',
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
         backgroundColor: Color(0XFFFBB009),
-        foregroundColor: Colors.white,
-        leading: Icon(Icons.menu),
+        foregroundColor: const Color.fromARGB(255, 255, 252, 252),
+        leading: Padding(
+          padding: const EdgeInsets.only(
+            left: 16.0,
+          ), // Optional: Add padding to adjust position
+          child: Image.asset('lib/assets/SINAG - LOGO WHITE 1.png'),
+        ),
         actions: [
           IconButton(
             onPressed: () {},
@@ -129,21 +129,55 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              SizedBox(height: 20),
-              // Main Circle Progress
-              _buildCircularProgress(),
-              SizedBox(height: 20),
-              _buildRowCards(),
-              SizedBox(height: 20),
-              _buildCarbonGoalCard(),
-              SizedBox(height: 30),
-            ],
+
+      body: Stack(
+        children: [
+          // Orange rounded box background with overlay image
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: MediaQuery.of(context).size.height / 3,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Color(0XFFFBB009),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
+                ),
+              ),
+              child: Stack(
+                children: [
+                  // Background Image overlay
+                  Positioned.fill(
+                    child: Image.asset(
+                      'lib/assets/elements 2.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
+
+          // Main content scrollable
+          SingleChildScrollView(
+            child: Center(
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  // Main Circle Progress
+                  _buildCircularProgress(),
+                  SizedBox(height: 20),
+                  _buildRowCards(),
+                  SizedBox(height: 20),
+                  _buildCarbonGoalCard(),
+                  SizedBox(height: 30),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         elevation: 9,
@@ -323,7 +357,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 10),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BarGraph()),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0XFFFBB009),
                   shape: RoundedRectangleBorder(
@@ -368,7 +407,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/carbon');
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0XFFB5E8BD),
                 minimumSize: Size(100, 40),
@@ -390,39 +431,74 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Select Daily Limit'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Set New Threshold Value'),
-              Slider(
-                value: _thresholdValue,
-                min: 0,
-                max: 1250,
-                divisions: 25,
-                label: _thresholdValue.toStringAsFixed(0),
-                onChanged: (double newValue) {
-                  setState(() {
-                    _thresholdValue = newValue;
-                  });
-                },
-              ),
-              Text(
-                'Threshold: ${_thresholdValue.toStringAsFixed(0)} W',
-                style: TextStyle(fontSize: 18),
-              ),
-            ],
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setDialogState) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Set New Threshold Value'),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: Color(
+                        0xFFFBB009,
+                      ), // Color of the filled track
+                      inactiveTrackColor: Color.fromARGB(
+                        173,
+                        251,
+                        174,
+                        9,
+                      ), // Color of the unfilled track
+                      thumbColor: Color(
+                        0xFFFBB009,
+                      ), // Color of the thumb (circle)
+                      overlayColor: Color.fromARGB(
+                        112,
+                        251,
+                        174,
+                        9,
+                      ), // Ripple effect
+                      valueIndicatorColor: Color(
+                        0xFFFBB009,
+                      ), // Label popup color
+                    ),
+                    child: Slider(
+                      value: _thresholdValue,
+                      min: 0,
+                      max: 1250,
+                      divisions: 25,
+                      label: _thresholdValue.toStringAsFixed(0),
+                      onChanged: (double newValue) {
+                        setDialogState(() {
+                          _thresholdValue = newValue;
+                        });
+                      },
+                    ),
+                  ),
+                  Text(
+                    'Threshold: ${_thresholdValue.toStringAsFixed(0)} W',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ],
+              );
+            },
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Color.fromARGB(255, 55, 55, 55)),
+              ),
             ),
             ElevatedButton(
               onPressed: () {
                 print('New Max: $_thresholdValue');
                 Navigator.of(context).pop();
               },
-              child: Text('Save'),
+              child: Text(
+                'Save',
+                style: TextStyle(color: Color.fromARGB(255, 55, 55, 55)),
+              ),
             ),
           ],
         );

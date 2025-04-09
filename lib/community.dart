@@ -419,28 +419,45 @@ Widget fullWidthBox(BuildContext context) {
         ],
       ),
       child: Center(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Image on the left
-            Image.asset('lib/assets/light.png', width: 20, height: 20),
-            SizedBox(width: 12), // Spacing between image and text
-            // Texts on the right
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Title Here',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  'lib/assets/Rectangle 82.png',
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
                 ),
-                Text(
-                  'Subtitle or Description',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Energy-Saving LED Lamp',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Get the EcoBright LED Lamp with 80% less energy usage.',
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     ),
