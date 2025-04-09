@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 void main() {
   runApp(Carbon());
@@ -25,13 +26,20 @@ class CarbonFootprintPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xFFF6F6F6),
       appBar: AppBar(
-        backgroundColor: Color(0XFFFBB009),
-        title: Text('Carbon Progress'),
+        title: Text('Carbon Footprint Tracker'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context); // Navigate back to the root (main.dart)
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
+            _buildCircularProgressWithCloud(0.65), // <--- Added here
+            SizedBox(height: 30),
             _buildFootprintBox(0.3),
             SizedBox(height: 15),
             _buildFootprintBox(0.6),
@@ -76,6 +84,32 @@ class CarbonFootprintPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCircularProgressWithCloud(double percent) {
+    return CircularPercentIndicator(
+      radius: 90.0,
+      lineWidth: 13.0,
+      animation: true,
+      percent: percent,
+      center: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.cloud, size: 40, color: Colors.grey[700]),
+          SizedBox(height: 8),
+          Text(
+            "${(percent * 100).toStringAsFixed(0)}%",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+          ),
+        ],
+      ),
+      circularStrokeCap: CircularStrokeCap.round,
+      progressColor: Color(0XFFFE9902),
+      backgroundColor: Color.fromARGB(255, 213, 213, 213),
+      arcType: ArcType.FULL,
+      arcBackgroundColor: Color.fromARGB(255, 213, 213, 213),
+      startAngle: 215,
     );
   }
 }

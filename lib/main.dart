@@ -167,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   SizedBox(height: 20),
                   // Main Circle Progress
-                  _buildCircularProgress(),
+                  _buildCircularProgress(percent),
                   SizedBox(height: 20),
                   _buildRowCards(),
                   SizedBox(height: 20),
@@ -208,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildCircularProgress() {
+  Widget _buildCircularProgress(double percent) {
     return GestureDetector(
       child: Material(
         elevation: 8,
@@ -226,9 +226,19 @@ class _HomeScreenState extends State<HomeScreen> {
               lineWidth: 13.0,
               animation: true,
               percent: percent,
-              center: Text(
-                "${(percent * 100).toStringAsFixed(0)}%",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+              center: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.flash_on, size: 40, color: Color(0XFFFE9902)),
+                  SizedBox(height: 8),
+                  Text(
+                    "${(percent * 100).toStringAsFixed(0)}%",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ],
               ),
               circularStrokeCap: CircularStrokeCap.round,
               progressColor: Color(0XFFFE9902),
