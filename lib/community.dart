@@ -21,6 +21,8 @@ class _CommunityState extends State<Community> {
       Navigator.pushNamed(context, '/community');
     } else if (index == 2) {
       Navigator.pushNamed(context, '/calculator');
+    } else if (index == 3) {
+      Navigator.pushNamed(context, '/profile');
     }
   }
 

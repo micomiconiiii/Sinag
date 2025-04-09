@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hackathonui/community.dart';
 import 'package:hackathonui/calculator.dart';
+import 'package:hackathonui/profile.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
@@ -16,11 +17,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+
       initialRoute: '/',
       routes: {
         '/': (context) => HomeScreen(),
         '/community': (context) => Community(),
         '/calculator': (context) => Calculator(),
+        '/profile': (context) => ProfilePage(),
       },
     );
   }
@@ -37,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   double percent = 0.0;
   String currentTime = "";
   int _selectedIndex = 0;
+  double _thresholdValue = 230.0; // Initial threshold value
 
   void _onItemTapped(int index) {
     setState(() {
@@ -47,6 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     if (index == 2) {
       Navigator.pushNamed(context, '/calculator');
+    }
+    if (index == 3) {
+      Navigator.pushNamed(context, '/profile');
     }
   }
 
@@ -241,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     TextSpan(
-                      text: '230',
+                      text: '$_thresholdValue',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 28.0,
@@ -382,11 +389,28 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Change Max Threshold'),
-          content: TextField(
-            controller: _thresholdController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'Enter new max threshold'),
+          title: Text('Select Daily Limit'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Set New Threshold Value'),
+              Slider(
+                value: _thresholdValue,
+                min: 0,
+                max: 1250,
+                divisions: 25,
+                label: _thresholdValue.toStringAsFixed(0),
+                onChanged: (double newValue) {
+                  setState(() {
+                    _thresholdValue = newValue;
+                  });
+                },
+              ),
+              Text(
+                'Threshold: ${_thresholdValue.toStringAsFixed(0)} W',
+                style: TextStyle(fontSize: 18),
+              ),
+            ],
           ),
           actions: [
             TextButton(
@@ -395,7 +419,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                print('New Max: ${_thresholdController.text}');
+                print('New Max: $_thresholdValue');
                 Navigator.of(context).pop();
               },
               child: Text('Save'),
